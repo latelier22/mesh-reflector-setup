@@ -4,7 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { gsap } from 'gsap';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
+// import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
+import { GUI } from 'dat.gui';
 import { MeshReflectorMaterial } from '../static/shaders/MeshReflectorMaterial.js';
 
 /////////////////////////////////////////////////////////////////////////
@@ -73,12 +74,12 @@ loader.setDRACOLoader(dracoLoader);
 const container = document.createElement('div');
 document.body.appendChild(container);
 scene = new THREE.Scene();
-scene.background = new THREE.Color(0xffffff);
+scene.background = new THREE.Color(0xDDDDDD);
 renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-renderer.autoClear = true;
+renderer.autoClear = false;
 renderer.setPixelRatio(2); //Performance
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.outputEncoding = THREE.sRGBEncoding;
+// renderer.outputEncoding = sRGBEncoding;
 container.appendChild(renderer.domElement);
 
 /////////////////////////////////////////////////////////////////////////
@@ -103,6 +104,63 @@ textureLoader
 camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.set(-2, 0.8, 4);
 
+//// ADD CUBE
+// // Step 1: Create the cube geometry and material
+// const cubeGeometry = new THREE.BoxGeometry(1, 1, 1); // width, height, depth
+// const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // green color
+
+// // Step 2: Create the cube mesh
+// const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+
+// // Step 3: Add the cube to the scene
+// scene.add(cube);
+
+// // Step 4: Optionally, position the cube
+// cube.position.set(5.5, 1, 0); // x, y, z
+// cube.scale.set(1,1,3)
+
+////
+
+textureLoader.load('voule-sur-la-plage.webp', function (texture) {
+    const planeGeometry = new THREE.PlaneGeometry(2, 1.5); // width, height
+    const planeMaterial = new THREE.MeshBasicMaterial({map: texture});
+    const planeImage = new THREE.Mesh(planeGeometry, planeMaterial);
+
+    // Add the plane to the scene
+    scene.add(planeImage);
+
+    // Optionally, position and rotate the plane
+    planeImage.position.set(0, 1.5, -4); // x, y, z
+});
+
+
+textureLoader.load('voule-sur-la-plage.webp', function (texture) {
+    const planeGeometry = new THREE.PlaneGeometry(2, 1.5); // width, height
+    const planeMaterial = new THREE.MeshBasicMaterial({map: texture});
+    const planeImage = new THREE.Mesh(planeGeometry, planeMaterial);
+
+    // Add the plane to the scene
+    scene.add(planeImage);
+
+    // Optionally, position and rotate the plane
+    planeImage.position.set(4, 1.5, 0); // x, y, z
+    planeImage.rotation.y = -Math.PI / 2; // Rotate the plane to lie flat
+});
+
+// // Create plane geometry and material
+// const planeGeometry = new THREE.PlaneGeometry(5, 5); // width, height
+// const planeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // red color
+
+// // Create the plane mesh
+// const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+// // Add the plane to the scene
+// scene.add(plane);
+
+// Optionally, position and rotate the plane
+// plane.position.set(0, 0, 0); // x, y, z
+// plane.rotation.x = -Math.PI / 2; // Rotate the plane to lie flat
+
 /////////////////////////////////////////////////////////////////////////
 ///// CONTROLS
 /////////////////////////////////////////////////////////////////////////
@@ -110,19 +168,31 @@ controls = new OrbitControls(camera, renderer.domElement);
 controls.enablePan = true
 controls.screenSpacePanning = false;
 controls.enabled = true;
-controls.autoRotate = true
+// essai arret rotation
+controls.autoRotate = false 
 controls.minDistance = 2
 controls.maxDistance = 5
 controls.maxPolarAngle = Math.PI / 2.15
 
 /////////////////////////////////////////////////////////////////////////
 ///// LIGHTS CONFIG
-const ambient = new THREE.AmbientLight(0xd9d9eb, 0.15); //Performance issue
-scene.add(ambient);
+// const ambient = new THREE.AmbientLight(0xd9d9eb, 0.005); //Performance issue
+// scene.add(ambient);
 
-light = new THREE.PointLight(0xefeff7, 0.096); //Performance issue
-light.position.set(75, 62, -90);
-scene.add(light);
+// light = new THREE.PointLight(0xefeff7, 0.005); //Performance issue
+// light.position.set(75, 62, -90);
+// scene.add(light);
+
+
+// Create and add a box geometry (opaque box)
+const boxGeometry = new THREE.BoxGeometry(10, 0.5, 10);
+const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+const box = new THREE.Mesh(boxGeometry, boxMaterial);
+box.position.y = 4; // Raise the box so it's above the ground
+box.castShadow = true; // Make the box cast shadows
+box.receiveShadow = true; // Make the box receive shadows
+
+scene.add(box);
 
 
 /////////////////////////////////////////////////////////////////////////
